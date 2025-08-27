@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USER = "kiranlal"
-        DOCKER_HUB_PASS = "2620659097"
-        IMAGE_NAME = "nextjsapp"
+        DOCKER_HUB_USER = "kiranlal369"
+        IMAGE_NAME = "nextjs-devops-deploy"
         EC2_USER = "ubuntu"
         EC2_HOST = "16.171.58.152"
         PEM_KEY = "/var/lib/jenkins/nextjs-devops-deploy.pem"
