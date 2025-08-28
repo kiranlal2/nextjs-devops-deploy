@@ -21,7 +21,7 @@ export default function Home() {
             .
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
+            Save and see your changes instantly in Jenkins.
           </li>
         </ol>
 
@@ -47,7 +47,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Read our docs
+            Read my docs
           </a>
         </div>
       </main>
@@ -95,7 +95,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Go to nextjs.org →
+          Go to Kiranlal.org →
         </a>
       </footer>
     </div>
