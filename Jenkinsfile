@@ -26,21 +26,22 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
+                    sh 'docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest'
                 }
             }
         }
 
         stage('Deploy to EC2') {
             steps {
-                sh '''
-                ssh -o StrictHostKeyChecking=no -i $PEM_KEY $EC2_USER@$EC2_HOST "
-                    docker pull $DOCKER_HUB_USER/$IMAGE_NAME:latest &&
-                    docker stop nextjsapp || true &&
-                    docker rm nextjsapp || true &&
-                    docker run -d -p 3000:3000 --name nextjsapp $DOCKER_HUB_USER/$IMAGE_NAME:latest
-                "
-                '''
+                sh """
+                ssh -o StrictHostKeyChecking=no -i $PEM_KEY $EC2_USER@$EC2_HOST << 'EOF'
+                  docker pull $DOCKER_HUB_USER/$IMAGE_NAME:latest
+                  docker stop nextjsapp || true
+                  docker rm nextjsapp || true
+                  docker run -d -p 3000:3000 --name nextjsapp $DOCKER_HUB_USER/$IMAGE_NAME:latest
+                  sudo systemctl restart nginx
+                EOF
+                """
             }
         }
     }
