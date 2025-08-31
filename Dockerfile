@@ -2,35 +2,20 @@
 FROM node:18-alpine AS builder
 
 WORKDIR /app
-
-# Install deps (clean install, includes devDependencies for build)
-COPY package*.json ./
+COPY package.json package-lock.json* ./
 RUN npm ci
-
-# Copy all source code
 COPY . .
 
-# Build Next.js
-RUN npm run build
+# Build and export static files
+RUN npm run build && npm run export
 
+# ---------- Nginx Stage ----------
+FROM nginx:alpine
 
-# ---------- Run Stage ----------
-FROM node:18-alpine AS runner
+# Copy static files to nginx html folder
+COPY --from=builder /app/out /usr/share/nginx/html
 
-WORKDIR /app
+# Expose port 80
+EXPOSE 80
 
-# Copy only package.json for production install
-COPY package*.json ./
-
-# Install only production dependencies
-RUN npm ci --only=production
-
-# Copy built assets from builder
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-
-# Expose Next.js port
-EXPOSE 3000
-
-# Run Next.js in production mode
-CMD ["npm", "run", "start"]
+CMD ["nginx", "-g", "daemon off;"]
