@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_USER = "kiranlal369"
         IMAGE_NAME = "nextjs-devops-deploy"
         EC2_USER = "ubuntu"
-        EC2_HOST = "51.20.130.122"
+        EC2_HOST = "13.61.184.32"
         PEM_KEY = "/var/lib/jenkins/nextjs-devops-deploy.pem"
     }
 
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                     sh 'docker push $DOCKER_HUB_USER/$IMAGE_NAME:latest'
                 }

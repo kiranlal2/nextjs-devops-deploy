@@ -3,7 +3,7 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install --legacy-peer-deps --no-audit --progress=false
 COPY . .
 
 # Build and export static files
