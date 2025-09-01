@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_USER = "kiranlal369"
         IMAGE_NAME = "nextjs-devops-deploy"
         EC2_USER = "ubuntu"
-        EC2_HOST = "13.62.45.219"
+        EC2_HOST = "51.20.130.122"
         PEM_KEY = "/var/lib/jenkins/nextjs-devops-deploy.pem"
     }
 
