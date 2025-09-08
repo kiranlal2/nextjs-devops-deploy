@@ -5,15 +5,14 @@ pipeline {
         DOCKER_HUB_USER = "kiranlal369"
         IMAGE_NAME      = "nextjs-devops-deploy"
         EC2_USER        = "ubuntu"
-        EC2_HOST        = "16.16.204.156"
+        EC2_HOST        = "13.48.138.171"
         PEM_KEY         = "/var/lib/jenkins/nextjs-devops-deploy.pem"
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/your-repo/nextjs-devops-deploy.git'
+                git branch: 'main', url: 'https://github.com/kiranlal2/nextjs-devops-deploy.git'
             }
         }
 
@@ -40,9 +39,8 @@ pipeline {
                     sh """
                         ssh -o StrictHostKeyChecking=no -i $PEM_KEY $EC2_USER@$EC2_HOST '
                         docker pull $DOCKER_HUB_USER/$IMAGE_NAME:latest &&
-                        docker stop nextjs-app || true &&
-                        docker rm nextjs-app || true &&
-                        docker run -d -p 80:80 --name nextjs-app $DOCKER_HUB_USER/$IMAGE_NAME:latest
+                        docker rm -f nextjs-app || true &&
+                        docker run -d -p 80:80 --restart unless-stopped --name nextjs-app $DOCKER_HUB_USER/$IMAGE_NAME:latest
                         '
                     """
                 }

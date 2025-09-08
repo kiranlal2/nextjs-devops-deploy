@@ -5,5 +5,7 @@ npm-debug.log
 .gitignore
 .dockerignore
 Dockerfile
+Jenkinsfile
 .env.local
 .env.development
+.next/cache
