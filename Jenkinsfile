@@ -1,22 +1,15 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HUB_USER = "kiranlal369"
-        IMAGE_NAME      = "nextjs-devops-deploy"
-        EC2_USER        = "ubuntu"
-        EC2_HOST        = "13.48.138.171"
-        PEM_KEY         = "/var/lib/jenkins/nextjs-devops-deploy.pem"
-    }
-
     options {
         timeout(time: 30, unit: 'MINUTES')
-        cleanWs()
+        // Do not put cleanWs here as an option - this causes error
     }
 
     stages {
         stage('Clone Repository') {
             steps {
+                cleanWs()  // Clean workspace before checkout
                 checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/kiranlal2/nextjs-devops-deploy.git']]])
             }
         }
@@ -44,11 +37,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                        ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ${EC2_USER}@${EC2_HOST} "
-                            docker pull ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest &&
-                            docker rm -f nextjs-app || true &&
-                            docker run -d -p 3000:3000 --restart unless-stopped --name nextjs-app ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest
-                        "
+                    ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ${EC2_USER}@${EC2_HOST} '
+                      cd /path/to/your/docker-compose-directory &&
+                      docker-compose pull &&
+                      docker-compose up -d --build
+                    '
                     """
                 }
             }
@@ -57,7 +50,7 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+            cleanWs()  // Clean workspace after build completes
         }
         success {
             echo '✅ Build and deployment successful!'
