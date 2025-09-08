@@ -21,6 +21,7 @@ pipeline {
                 script {
                     sh 'docker build -t $DOCKER_HUB_USER/$IMAGE_NAME:latest .'
                 }
+                'docker push kiranlal369/nextjs-devops-deploy:latest'
             }
         }
 
